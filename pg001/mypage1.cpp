@@ -1,5 +1,6 @@
 #include"stdafx.h"
 #include"mypage1.h"
+#include"mystruct.h"
 
 IMPLEMENT_DYNCREATE(mypage1,CPropertyPage)
 

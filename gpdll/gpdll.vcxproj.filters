@@ -15,48 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="myrecord.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="mydlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="myapp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="mypage1.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="mypage2.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="mystruct.h">
+    <ClInclude Include="gpdll01.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="myrecord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="mydlg.cpp">
+    <ClCompile Include="gpdll01.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="myapp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="mypage1.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="mypage2.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="pg001.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

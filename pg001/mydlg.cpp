@@ -1,5 +1,6 @@
 #include"stdafx.h"
 #include"mydlg.h"
+#include"mystruct.h"
 
 BEGIN_MESSAGE_MAP(mydlg,CDialog)
 	//
@@ -58,3 +59,13 @@ void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 
 	presult=0;
 };
+BOOL mydlg::read_dt()
+{
+	CFile file;
+	if(!file.Open("./ssss.dat",CFile::modeRead))
+		return false;
+
+
+	return true;
+};
+

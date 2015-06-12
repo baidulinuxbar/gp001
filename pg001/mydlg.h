@@ -15,6 +15,9 @@ public:
 	mypage2 mp2;
 	mydlg(CWnd *pwnd=NULL):CDialog(IDD_DIALOG1,pwnd){};
 	BOOL OnInitDialog();
+private:
+	BOOL read_dt();
+public:
 	afx_msg void OnOK();
 	afx_msg void OnCancel();
 	void onsel(NMHDR *pnmhdr,LRESULT *presult);//Tab控件的点击响应函数

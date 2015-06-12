@@ -11,12 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C00D653F-A738-4977-8BE0-B876255E4F32}</ProjectGuid>
-    <RootNamespace>pg001</RootNamespace>
+    <ProjectGuid>{A360E0F9-DD2A-4E27-BC96-FA4ECA48A76A}</ProjectGuid>
+    <RootNamespace>gpdll</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
@@ -63,23 +63,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="myapp.h" />
-    <ClInclude Include="mydlg.h" />
-    <ClInclude Include="mypage1.h" />
-    <ClInclude Include="mypage2.h" />
-    <ClInclude Include="mystruct.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="gpdll01.h" />
+    <ClInclude Include="myrecord.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="myapp.cpp" />
-    <ClCompile Include="mydlg.cpp" />
-    <ClCompile Include="mypage1.cpp" />
-    <ClCompile Include="mypage2.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="pg001.rc" />
+    <ClCompile Include="gpdll01.cpp" />
+    <ClCompile Include="myrecord.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
