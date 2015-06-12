@@ -30,4 +30,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="gpdll01.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>

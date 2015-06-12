@@ -90,7 +90,7 @@ _declspec(dllexport) int WINAPI getmsg(void *res)
 	{
 		db.Close();
 		MessageBox(NULL,ep->m_strError,"from dll-001",0);
-		return;
+		return 1;
 	}
 	if(mrd.IsEOF())
 	{
@@ -153,6 +153,7 @@ _declspec(dllexport) int WINAPI getdata(void *res)
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	if(res==NULL)
 		return 1;
+	dldata.RemoveAll();
 	CString str,s1;
 	crt_conn(str);
 	CDatabase db;
@@ -186,8 +187,12 @@ _declspec(dllexport) int WINAPI getdata(void *res)
 	mrd.MoveFirst();
 	while(!mrd.IsEOF())
 	{
-
+		dldata.Add(mrd.dv);
+		mrd.MoveNext();
 	}
+	mrd.Close();
+	db.Close();
+	return 0;
 };
 
 

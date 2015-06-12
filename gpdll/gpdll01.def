@@ -1,0 +1,11 @@
+LIBRARY	gpdll
+
+EXPORTS
+	;;
+	dlmsg			@1
+	dldata			@2
+	putmsg			@3
+	getmsg			@4
+	putdata			@5
+	getdata			@6
+
