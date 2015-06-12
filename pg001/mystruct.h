@@ -21,3 +21,7 @@ typedef struct DATA_VALUE
 	double	gv;						//Êý¾ÝÖµ
 }data_v;
 
+typedef int (WINAPI *PUTMSG)(void *);
+typedef int (WINAPI *GETMSG)(void *);
+typedef int (WINAPI *PUTDATA)(void *);
+typedef int (WINAPI *GETDATA)(void *);

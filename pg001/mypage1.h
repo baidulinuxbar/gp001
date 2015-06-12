@@ -9,6 +9,8 @@ public:
 	DECLARE_DYNCREATE(mypage1)
 	mypage1():CPropertyPage(IDD_PROPPAGE_SMALL){};
 	BOOL OnInitDialog();
+	afx_msg void onadd();
+	afx_msg void ondel();
 DECLARE_MESSAGE_MAP()
 };
 
