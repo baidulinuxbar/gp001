@@ -6,7 +6,7 @@
 
 bmsg g_msg;
 data_v g_data;
-
+CArray<bmsg,bmsg&> gamsg;
 
 
 BOOL myapp::InitInstance()

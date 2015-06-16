@@ -8,4 +8,7 @@ EXPORTS
 	getmsg			@4
 	putdata			@5
 	getdata			@6
+	delmsg			@7
+	deldata			@8
+
 

@@ -19,6 +19,10 @@ _declspec(dllexport) int WINAPI getmsg(void *res);
 _declspec(dllexport) int WINAPI putdata(void *res);
 //定义的从数据库读取数据的函数
 _declspec(dllexport) int WINAPI getdata(void *res);
+//定义的手动删除基本信息数据的函数
+_declspec(dllexport) int WINAPI delmsg(void *res);
+//定义的删除数据的函数
+_declspec(dllexport) int WINAPI deldata(void *res);
 
 //定义的模块内部使用的函数，建立数据库连接关键字
 BOOL crt_conn(CString &str);

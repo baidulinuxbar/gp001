@@ -11,6 +11,7 @@ public:
 	BOOL OnInitDialog();
 	afx_msg void onadd();
 	afx_msg void ondel();
+	afx_msg void onselchg();
 DECLARE_MESSAGE_MAP()
 };
 

@@ -39,7 +39,7 @@ afx_msg void mydlg::OnCancel()
 void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 {
 	CTabCtrl *tab=(CTabCtrl *)GetDlgItem(IDC_TAB1);
-	int i,j,k;
+	int i;
 	i=tab->GetCurSel();
 	switch(i)
 	{

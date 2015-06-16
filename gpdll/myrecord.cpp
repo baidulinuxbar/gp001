@@ -8,7 +8,7 @@ myrecord::myrecord(CDatabase *db):CRecordset(db)
 	switch(whichtab)
 	{
 	case 0://table base_msg
-		m_nFields=8;
+		m_nFields=10;
 		memset((void*)&bsd,0,sizeof(bsd));
 		break;
 	case 1://table data_msg
@@ -43,6 +43,8 @@ void myrecord::DoFieldExchange(CFieldExchange *pdx)
 		RFX_Int(pdx,"gtimes",bsd.gtimes);
 		RFX_Double(pdx,"gmax",bsd.gmax);
 		RFX_Double(pdx,"gstd",bsd.gstd);
+		RFX_Byte(pdx,"gcycle",bsd.gcycle);
+		RFX_Byte(pdx,"gdecay",bsd.gdecay);
 		break;
 	case 1:
 		RFX_Int(pdx,"ID",dv.gid);
