@@ -15,6 +15,14 @@ myrecord::myrecord(CDatabase *db):CRecordset(db)
 		m_nFields=3;
 		memset((void*)&dv,0,sizeof(dv));
 		break;
+	case 2://table code_tab
+		m_nFields=4;
+		memset((void*)&ct,0,sizeof(ct));
+		break;
+	case 3://table data_tab
+		m_nFields=8;
+		memset((void*)&dt,0,sizeof(dt));
+		break;
 	};
 	m_nDefaultType=snapshot;
 };
@@ -26,6 +34,10 @@ CString myrecord::GetDefaultSQL()
 		return _T("base_msg");
 	case 1:
 		return _T("data_msg");
+	case 2:
+		return _T("code_tab");
+	case 3:
+		return _T("data_tab");
 	};
 	return _T("error");
 };
@@ -50,6 +62,22 @@ void myrecord::DoFieldExchange(CFieldExchange *pdx)
 		RFX_Int(pdx,"ID",dv.gid);
 		RFX_Date(pdx,"gdate",dv.tm);
 		RFX_Double(pdx,"gvalue",dv.gv);
+		break;
+	case 2://code_tab
+		RFX_Int(pdx,"gp_code",ct.gp_code);
+		RFX_Text(pdx,"gp_name",ct.gp_name,60);
+		RFX_Byte(pdx,"gp_type",ct.gp_type);
+		RFX_Byte(pdx,"gp_used",ct.gp_used);
+		break;
+	case 3://data_tab
+		RFX_Int(pdx,"gp_code",dt.gp_code);
+		RFX_Date(pdx,"gp_date",dt.gp_date);
+		RFX_Double(pdx,"gp_pre_price",dt.pre);
+		RFX_Double(pdx,"gp_beg_price",dt.beg);
+		RFX_Double(pdx,"gp_cur_max",dt.cur_max);
+		RFX_Double(pdx,"gp_cur_min",dt.cur_min);
+		RFX_Int(pdx,"gp_total_cnt",dt.total_cnt);
+		RFX_Int(pdx,"gp_total_price",dt.total_pri);
 		break;
 	};
 };

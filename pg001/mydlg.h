@@ -13,13 +13,18 @@ class mydlg:public CDialog
 public:
 	mypage1 mp1;
 	mypage2 mp2;
+	NOTIFYICONDATA ni;
 	mydlg(CWnd *pwnd=NULL):CDialog(IDD_DIALOG1,pwnd){};
 	BOOL OnInitDialog();
 private:
 	BOOL read_dt();
+	afx_msg void onquit();
+	afx_msg void onshow();
+	afx_msg void onparam();
 public:
 	afx_msg void OnOK();
 	afx_msg void OnCancel();
 	void onsel(NMHDR *pnmhdr,LRESULT *presult);//Tab控件的点击响应函数
+	LRESULT onnotify(WPARAM wparam, LPARAM lparam);
 DECLARE_MESSAGE_MAP()
 };

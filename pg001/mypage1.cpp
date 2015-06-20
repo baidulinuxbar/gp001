@@ -9,6 +9,7 @@ extern CArray<bmsg,bmsg&> gamsg;
 PUTMSG putmsg=NULL;
 GETMSG getmsg=NULL;
 DELMSG delmsg=NULL;
+DELDATA	deldata=NULL;
 CArray<bmsg,bmsg&> *amsg=NULL;
 
 
@@ -107,7 +108,7 @@ afx_msg void mypage1::onadd()
 	}
 	memcpy((void*)g_msg.name,str.GetBuffer(0),str.GetLength());
 //	g_msg.name=str;
-	CButton *bt=(CButton*)GetDlgItem(IDC_RADIO1);
+	CButton *bt=(CButton*)GetDlgItem(IDC_RADIO2);
 	g_msg.gtype=bt->GetCheck();
 	bt=(CButton*)GetDlgItem(IDC_CHECK1);
 	if(!bt->GetCheck())
@@ -155,10 +156,24 @@ afx_msg void mypage1::onadd()
 afx_msg  void mypage1::ondel()
 {
 	CListBox *list=(CListBox*)GetDlgItem(IDC_LIST1);
-	int i,j;
+	int i;
+	CString s1,str;
 	i=list->GetCurSel();
+	if(i!=-1)
+	{
+		list->GetText(i,str);
+		s1.Format("你确定要删除“%s”吗？",str);
+		if(MessageBox(s1,"message",MB_YESNO)==IDNO)
+			return;
+	}
 	list->DeleteString(i);
-
+	g_msg=gamsg.GetAt(i);
+	if(!del_result(i))
+	{
+		MessageBox("严重错误，有些记录没有删除");
+		PostQuitMessage(0);
+	}
+	gamsg.RemoveAt(i);
 };
 
 afx_msg void mypage1::onselchg()
@@ -188,9 +203,9 @@ afx_msg void mypage1::onselchg()
 	}
 	bt=(CButton*)GetDlgItem(IDC_CHECK1);
 	if(g_msg.gwatch==0)//三重顶
-		bt->SetCheck(0);
-	else
 		bt->SetCheck(1);
+	else
+		bt->SetCheck(0);
 	str.Format("%0.2f",g_msg.gmax);
 	SetDlgItemText(IDC_EDIT3,str);
 	str.Format("%0.2f",g_msg.gstd);
@@ -199,4 +214,46 @@ afx_msg void mypage1::onselchg()
 	box->SetCurSel(g_msg.gcycle);
 	box=(CComboBox*)GetDlgItem(IDC_COMBO2);
 	box->SetCurSel(g_msg.gdecay);
+};
+
+BOOL mypage1::del_result(int ncode)
+{
+	HMODULE mod=NULL;
+	mod=LoadLibrary("gpdll.dll");
+	if(mod==NULL)
+	{
+		MessageBox("加载动态连接库失败！");
+		return false;
+	}
+	delmsg=(DELMSG)::GetProcAddress(mod,"delmsg");
+	if(delmsg==NULL)
+	{
+		FreeLibrary(mod);
+		MessageBox("取得函数地址失败！");
+		return false;
+	}
+	deldata=(DELDATA)::GetProcAddress(mod,"deldata");
+	if(deldata==NULL)
+	{
+		FreeLibrary(mod);
+		MessageBox("取得函数地址失败！");
+		return false;
+	}
+	char str[1024];
+	memset((void*)&str,0,sizeof(str));
+	_snprintf_s(str,1024,1024,"SELECT * FROM base_msg WHERE ID = %d",ncode);
+	if(delmsg((void*)&str)!=0)
+	{
+		FreeLibrary(mod);
+		return false;
+	}
+	memset((void*)&str,0,sizeof(str));
+	_snprintf_s(str,1024,1024,"SELECT * FROM data_msg WHERE ID = %d",ncode);
+	if(deldata((void*)&str)!=0)
+	{
+		FreeLibrary(mod);
+		return false;
+	}
+	FreeLibrary(mod);
+	return true;
 };

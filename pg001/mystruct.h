@@ -22,6 +22,27 @@ typedef struct DATA_VALUE
 	CTime	tm;						//长型日期
 	double	gv;						//数据值
 }data_v;
+//2015-6-18添加，对应表格： code_tab
+typedef struct CODE_TAB
+{
+	int		gp_code;					//股票代码
+	char	gp_name[60];				//股票名称
+	BYTE	gp_type;					//股票类型  0：沪市 1：深市
+	BYTE	gp_used;					//是否可用	0：可用 1：弃用
+}code_tab;
+//2015-6-18添加，对应表格：data_tab
+typedef struct DATA_TAB
+{
+	int		gp_code;					//股票代码
+	CTime	gp_date;					//日期
+	double	pre;						//昨日收盘价
+	double	beg;						//今日开盘价
+	double	cur_max;					//今日最高
+	double	cur_min;					//今日最低
+	int		total_cnt;					//成交量
+	int		total_pri;					//成交额
+}data_tab;
+
 
 const int cycle[6]={3,4,5,10,15,20};	//监控的最短周期
 const double decay[6]={0.8,0.7,0.6,0.5,0.4,0.3};		//波谷的衰减率

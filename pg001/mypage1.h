@@ -12,6 +12,9 @@ public:
 	afx_msg void onadd();
 	afx_msg void ondel();
 	afx_msg void onselchg();
+private:
+	BOOL del_result(int ncode);
+public:
 DECLARE_MESSAGE_MAP()
 };
 

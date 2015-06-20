@@ -12,5 +12,6 @@ public:
 	BOOL OnInitDialog();
 	afx_msg void on_run();
 	afx_msg void on_stop();
+	LRESULT ontest(WPARAM wparam,LPARAM lparam);
 DECLARE_MESSAGE_MAP()
 };

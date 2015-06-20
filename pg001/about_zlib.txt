@@ -1,0 +1,104 @@
+寻找gzip
+获取一个网页数据返回的编码类型是gzip，我该怎么解压缩
+HTTP头获取？
+如何用vb获取网络上的xml文件,并解析内容
+关于GZIP的解码
+怎样解gzip的压缩
+请问Wininet是否可以进行Gzip的http传输，尤其是post的时候！如果可以如何实现？
+关于GZIP格式解压缩HTTP数据包的问题,我使用ZLIB为什么必须先保存文件,内存解压缩出错
+无法获取$_SERVER["HTTP_REFERER"]
+关于GZIP的问题，高分求解！！
+.....
+等都是关于gzip解压的
+问题：
+提取http的gzip内容，并解压。
+关键点：
+1 提取http数据包的内容，主要是gzip格式的
+2 数据包的重组
+3 在内存中解压gzip数据
+
+这两个周过来，都是在网上过来的，得到网友的帮助不少，很是感激，为了不让这个问题继续困扰后来的un_gziper，特写此文。
+1 数据包内存的提取：
+关键的地方是找到gzip内存的开始位置以及如何确定gzip内容的大小
+开始位置：“Content-Encoding: gzip\r\n\r\n”
+gzip大小：“Content-Length:”后面的就是了
+2 数据包的重组，一般网页的内容很少是一个数据包可以装得下的，所以都得进行gzip之后再用多个数据包进行传输
+关键的地方是：
+get请求数据包的ack和seq与http返回数据包的ack，seq有密切的联系：
+举例说明：
+get请求：ack=0，seq=0
+http1：seq=0,ack=584
+http2: seq=1420,ack=584
+...
+简单的分析说明可以看出，我们的算法设计：
+首先得到get请求的ack，返回的数据包的seq等于这个值，同时记下这个数据包的ack，后面进行分包发送的http的数据包的ack都是这个值，这个是关键点之一，同时综合
+Content-Length就可以得到gzip的全部内容。
+至此，原始数据提取完毕，该是如何解压的问题了
+3解压gzip
+我做了上面的1，2步以后将内容保存到文件里面，用gzip命令可以打开，验证了数据的完整性。
+而后我采用了zlib提供的uncompress函数，和大多数的网友一样，都是犯了一个致命的错误，没有仔细的阅读zlib的文档！导致一次次无谓的识别！
+事实上zlib格式和gzib格式是有差别的，而uncompress是用来解压zlib格式文件的，这就是为什么会出现用compress函数压缩的数据，在内存中可以直接用uncompress函数进行解压的，而就不能解压gzip数据的问题！ 
+
+后来测试了zlib包里面的example例子，算是对zlib有了一点点的了解，应该用inflate类函数进行解压！
+当然这样遇到了问题，格式不对!
+后来在网上看到的帖子：gzip格式用inflate函数还不行，必需要用inflateInit2(&strm, 47); ！！！！！！！！！！！！！！！！！！
+问题解决！
+这里借用那位网友的源代码，同时对他表示感谢！
+
+int inflate_read(char *source,int len,char **dest,int gzip)
+{ 
+int ret; 
+unsigned have; 
+z_stream strm; 
+unsigned char out[CHUNK]; 
+int totalsize = 0; 
+
+/* allocate inflate state */ 
+strm.zalloc = Z_NULL; 
+strm.zfree = Z_NULL; 
+strm.opaque = Z_NULL; 
+strm.avail_in = 0; 
+strm.next_in = Z_NULL; 
+
+if(gzip) 
+ret = inflateInit2(&strm, 47); 
+else 
+ret = inflateInit(&strm); 
+
+if (ret != Z_OK) 
+return ret; 
+
+strm.avail_in = len; 
+strm.next_in = source; 
+
+/* run inflate() on input until output buffer not full */ 
+do { 
+strm.avail_out = CHUNK; 
+strm.next_out = out; 
+ret = inflate(&strm, Z_NO_FLUSH); 
+assert(ret != Z_STREAM_ERROR); /* state not clobbered */ 
+switch (ret) { 
+case Z_NEED_DICT: 
+ret = Z_DATA_ERROR; /* and fall through */ 
+case Z_DATA_ERROR: 
+case Z_MEM_ERROR: 
+inflateEnd(&strm); 
+return ret; 
+} 
+have = CHUNK - strm.avail_out; 
+totalsize += have; 
+*dest = realloc(*dest,totalsize); 
+memcpy(*dest + totalsize - have,out,have); 
+} while (strm.avail_out == 0); 
+
+/* clean up and return */ 
+(void)inflateEnd(&strm); 
+return ret == Z_STREAM_END ? Z_OK : Z_DATA_ERROR; 
+}
+
+
+后记，这个过程是痛苦的，但也是幸福的！
+这里我发起一个小小的倡议，对所有关注gzip解压的问题的网友：
+我们都遇到了一个问题就是zlib的文档都是英文的，有个别网友翻译了开头的一小部分，但是这是不够的！
+所以，我希望有兴趣的朋友可以一起来帮zlib的文档翻译成为中文！
+有兴趣的可以加我！

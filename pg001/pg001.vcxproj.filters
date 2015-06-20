@@ -36,6 +36,15 @@
     <ClInclude Include="mystruct.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="myconst.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -58,5 +67,10 @@
     <ResourceCompile Include="pg001.rc">
       <Filter>资源文件</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\downloads\20150617102824198_easyicon_net_64.ico">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

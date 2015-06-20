@@ -296,12 +296,216 @@ _declspec(dllexport) int WINAPI deldata(void *res)
 		db.Close();
 		return 1;
 	}
+/*	mrd.MoveFirst();
+	while(!mrd.IsEOF())
+	{
+		mrd.Delete();
+		mrd.MoveNext();
+	}
+*/
 	mrd.Delete();
 	db.CommitTrans();
 	mrd.Close();
 	db.Close();
 	return 0;
 };
+
+//定义的表格3 code_tab的存储函数，该函数将用于记录的批量处理。
+_declspec(dllexport) int WINAPI put_ct(void *res)
+{
+	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+	if(res==NULL)
+		return 1;
+	whichtab=2;
+	CArray<code_tab,code_tab&> *ca;
+	ca=(CArray<code_tab,code_tab&> *)res;
+	CString str;
+	int i,j;
+	crt_conn(str);
+	CDatabase db;
+	if(db.IsOpen())
+		db.Close();
+	try
+	{db.Open(NULL,false,false,str);}
+	catch(CDBException *ep)
+	{
+		MessageBox(NULL,ep->m_strError,"from dll-1001",0);
+		return 1;
+	}
+	myrecord mrd(&db);
+	if(mrd.IsOpen())
+		mrd.Close();
+	try
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM code_tab");}
+	catch(CDBException *ep)
+	{
+		db.Close();
+		MessageBox(NULL,ep->m_strError,"from dll-1002",0);
+		return 1;
+	}
+	i=ca->GetCount();
+	for(j=0;j<i;j++)
+	{
+		mrd.AddNew();
+		memset((void*)&(mrd.ct),0,sizeof(mrd.ct));
+		mrd.ct=ca->GetAt(j);
+		mrd.Update();
+	}
+	mrd.Close();
+	db.Close();
+	return 0;
+};
+//定义的表格4 data_tab的存储函数，该函数也用于记录的批量处理
+_declspec(dllexport) int WINAPI put_dt(void *res)
+{
+	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+	if(res==NULL)
+		return 1;
+	whichtab=3;
+	CArray<data_tab,data_tab&> *ca;
+	ca=(CArray<data_tab,data_tab&> *)res;
+	CString str;
+	int i,j;
+	crt_conn(str);
+	CDatabase db;
+	if(db.IsOpen())
+		db.Close();
+	try
+	{db.Open(NULL,false,false,str);}
+	catch(CDBException *ep)
+	{
+		MessageBox(NULL,ep->m_strError,"from dll-1003",0);
+		return 1;
+	}
+	myrecord mrd(&db);
+	if(mrd.IsOpen())
+		mrd.Close();
+	try
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM data_tab",0);}
+	catch(CDBException *ep)
+	{
+		db.Close();
+		MessageBox(NULL,ep->m_strError,"from dll-1004",0);
+		return 1;
+	}
+	i=ca->GetCount();
+	for(j=0;j<i;j++)
+	{
+		mrd.AddNew();
+		memset((void*)&(mrd.dt),0,sizeof(mrd.dt));
+		mrd.dt=ca->GetAt(j);
+		mrd.Update();
+	}
+	mrd.Close();
+	db.Close();
+	return 0;
+};
+//定义的表格3的读取函数
+_declspec(dllexport) int WINAPI get_ct(void *res)
+{
+	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+//	if(res==NULL)
+//		return 1;
+	whichtab=2;
+	dlct.RemoveAll();
+	CString str;
+	crt_conn(str);
+	CDatabase db;
+	if(db.IsOpen())
+		db.Close();
+	try
+	{db.Open(NULL,false,false,str);}
+	catch(CDBException *ep)
+	{
+		MessageBox(NULL,ep->m_strError,"from dll-1005",0);
+		return 1;
+	}
+	myrecord mrd(&db);
+	if(mrd.IsOpen())
+		mrd.Close();
+	try
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM code_tab",0);}
+	catch(CDBException *ep)
+	{
+		db.Close();
+		MessageBox(NULL,ep->m_strError,"from dll-1006",0);
+		return 1;
+	}
+	if(mrd.IsEOF())
+	{
+		mrd.Close();
+		db.Close();
+		return 0;
+	}
+	mrd.MoveFirst();
+	while(!mrd.IsEOF())
+	{
+		dlct.Add(mrd.ct);
+		mrd.MoveNext();
+	}
+	mrd.Close();
+	db.Close();
+	return 0;
+};
+//定义的表格4的读取函数
+_declspec(dllexport) int WINAPI get_dt(void *res)
+{
+	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+	whichtab=3;
+	dldt.RemoveAll();
+	CString str;
+	crt_conn(str);
+	CDatabase db;
+	if(db.IsOpen())
+		db.Close();
+	try
+	{db.Open(NULL,false,false,str);}
+	catch(CDBException *ep)
+	{
+		MessageBox(NULL,ep->m_strError,"from dll-1007",0);
+		return 1;
+	}
+	myrecord mrd(&db);
+	if(mrd.IsOpen())
+		mrd.Close();
+	try
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM data_tab");}
+	catch(CDBException *ep)
+	{
+		db.Close();
+		MessageBox(NULL,ep->m_strError,"from dll-1008",0);
+		return 1;
+	}
+	if(mrd.IsEOF())
+	{
+		mrd.Close();
+		db.Close();
+		return 0;
+	}
+	mrd.MoveFirst();
+	while(!mrd.IsEOF())
+	{
+		dldt.Add(mrd.dt);
+		mrd.MoveNext();
+	}
+	mrd.Close();
+	db.Close();
+	return 0;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

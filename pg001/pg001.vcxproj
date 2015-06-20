@@ -64,12 +64,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="myapp.h" />
+    <ClInclude Include="myconst.h" />
     <ClInclude Include="mydlg.h" />
     <ClInclude Include="mypage1.h" />
     <ClInclude Include="mypage2.h" />
     <ClInclude Include="mystruct.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="zconf.h" />
+    <ClInclude Include="zlib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="myapp.cpp" />
@@ -80,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="pg001.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\downloads\20150617102824198_easyicon_net_64.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

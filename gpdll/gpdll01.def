@@ -10,5 +10,11 @@ EXPORTS
 	getdata			@6
 	delmsg			@7
 	deldata			@8
+	dlct			@9
+	dldt			@10
+	put_ct			@11
+	put_dt			@12
+	get_ct			@13
+	get_dt			@14
 
 

@@ -10,3 +10,10 @@
 #include<imm.h>
 #include<math.h>
 
+#include<winsock2.h>
+#include<ws2tcpip.h>
+#include<netmon.h>		
+#include<mstcpip.h>
+#include<afxinet.h>
+
+
