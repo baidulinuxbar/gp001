@@ -13,5 +13,8 @@ public:
 	afx_msg void on_run();
 	afx_msg void on_stop();
 	LRESULT ontest(WPARAM wparam,LPARAM lparam);
+private:
+	int cnts;
+public:
 DECLARE_MESSAGE_MAP()
 };

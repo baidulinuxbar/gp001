@@ -6,7 +6,7 @@
 
 extern HWND page2_wnd;
 //获取数据的线程函数
-extern UINT get_data2(LPVOID lpvoid);
+extern UINT get_data(LPVOID lpvoid);
 
 
 
@@ -28,7 +28,8 @@ BOOL mypage2::OnInitDialog()
 
 afx_msg void mypage2::on_run()
 {
-	AfxBeginThread(get_data2,NULL);
+	cnts=0;
+	AfxBeginThread(get_data,NULL);
 };
 afx_msg void mypage2::on_stop()
 {
@@ -37,12 +38,17 @@ afx_msg void mypage2::on_stop()
 
 LRESULT mypage2::ontest(WPARAM wparam,LPARAM lparam)
 {
-	if(lparam==NULL)
-		return 0;
 	CString str,s1;
-	GetDlgItemText(IDC_EDIT1,s1);
-	str.Format("\r\n%s",(char*)lparam);
-	s1+=str;
-	SetDlgItemText(IDC_EDIT1,s1);
+	if(lparam==NULL)
+		SetDlgItemText(IDC_EDIT1,"");
+	else
+	{
+		GetDlgItemText(IDC_EDIT1,s1);
+		str.Format("\r\n%s",(char*)lparam);
+		s1+=str;
+		SetDlgItemText(IDC_EDIT1,s1);
+		str.Format("记录数：%d",++cnts);
+		SetDlgItemText(IDC_STATIC1,str);
+	}
 	return 0;
 };
