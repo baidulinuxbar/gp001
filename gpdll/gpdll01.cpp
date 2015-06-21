@@ -311,16 +311,14 @@ _declspec(dllexport) int WINAPI deldata(void *res)
 };
 
 //定义的表格3 code_tab的存储函数，该函数将用于记录的批量处理。
+/*2015-6-21修改，该函数无需批量处理，所以传入的参数不是队列而是一个结构指针*/
 _declspec(dllexport) int WINAPI put_ct(void *res)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	if(res==NULL)
 		return 1;
 	whichtab=2;
-	CArray<code_tab,code_tab&> *ca;
-	ca=(CArray<code_tab,code_tab&> *)res;
 	CString str;
-	int i,j;
 	crt_conn(str);
 	CDatabase db;
 	if(db.IsOpen())
@@ -343,14 +341,10 @@ _declspec(dllexport) int WINAPI put_ct(void *res)
 		MessageBox(NULL,ep->m_strError,"from dll-1002",0);
 		return 1;
 	}
-	i=ca->GetCount();
-	for(j=0;j<i;j++)
-	{
-		mrd.AddNew();
-		memset((void*)&(mrd.ct),0,sizeof(mrd.ct));
-		mrd.ct=ca->GetAt(j);
-		mrd.Update();
-	}
+	mrd.AddNew();
+	memset((void*)&(mrd.ct),0,sizeof(mrd.ct));
+	memcpy((void*)&(mrd.ct),res,sizeof(mrd.ct));
+	mrd.Update();
 	mrd.Close();
 	db.Close();
 	return 0;
@@ -401,11 +395,14 @@ _declspec(dllexport) int WINAPI put_dt(void *res)
 	return 0;
 };
 //定义的表格3的读取函数
+/*2015-6-21修改，原来该函数无需传入参数，现需传入一个__time64_t的参数,该参数用于确定
+查询的日期是否存在记录，该函数可能返回0记录，表示该日期没有获取记录。
+*/
 _declspec(dllexport) int WINAPI get_ct(void *res)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-//	if(res==NULL)
-//		return 1;
+	if(res==NULL)
+		return 1;
 	whichtab=2;
 	dlct.RemoveAll();
 	CString str;
@@ -420,11 +417,12 @@ _declspec(dllexport) int WINAPI get_ct(void *res)
 		MessageBox(NULL,ep->m_strError,"from dll-1005",0);
 		return 1;
 	}
+	str.Format("SELECT * FROM code_tab WHERE gp_date = %ld",(time_t)&res);
 	myrecord mrd(&db);
 	if(mrd.IsOpen())
 		mrd.Close();
 	try
-	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM code_tab",0);}
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,str,0);}
 	catch(CDBException *ep)
 	{
 		db.Close();
@@ -448,9 +446,13 @@ _declspec(dllexport) int WINAPI get_ct(void *res)
 	return 0;
 };
 //定义的表格4的读取函数
+/*2015-6-21修改，修改为按查询条件取得记录，条件查询语句直接在函数外构造，并直接通过参数传入
+在本函数直接使用。*/
 _declspec(dllexport) int WINAPI get_dt(void *res)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+	if(res==NULL)
+		return 1;
 	whichtab=3;
 	dldt.RemoveAll();
 	CString str;
@@ -465,11 +467,12 @@ _declspec(dllexport) int WINAPI get_dt(void *res)
 		MessageBox(NULL,ep->m_strError,"from dll-1007",0);
 		return 1;
 	}
+	str.Format("%s",(char*)res,strlen((char*)res));
 	myrecord mrd(&db);
 	if(mrd.IsOpen())
 		mrd.Close();
 	try
-	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,"SELECT * FROM data_tab");}
+	{mrd.Open(AFX_DB_USE_DEFAULT_TYPE,str,0);}
 	catch(CDBException *ep)
 	{
 		db.Close();

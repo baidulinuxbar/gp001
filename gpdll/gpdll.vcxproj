@@ -70,6 +70,7 @@
   <ItemGroup>
     <ClInclude Include="gpdll01.h" />
     <ClInclude Include="myrecord.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gpdll01.cpp" />
@@ -77,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="gpdll01.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="gpdll.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

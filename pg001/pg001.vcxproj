@@ -68,6 +68,7 @@
     <ClInclude Include="mydlg.h" />
     <ClInclude Include="mypage1.h" />
     <ClInclude Include="mypage2.h" />
+    <ClInclude Include="mypage3.h" />
     <ClInclude Include="mystruct.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="mydlg.cpp" />
     <ClCompile Include="mypage1.cpp" />
     <ClCompile Include="mypage2.cpp" />
+    <ClCompile Include="mypage3.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

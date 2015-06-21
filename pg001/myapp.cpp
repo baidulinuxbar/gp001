@@ -13,8 +13,12 @@ bmsg g_msg;
 data_v g_data;
 CArray<bmsg,bmsg&> gamsg;
 CArray<code_tab,code_tab&> mct;
+CArray<data_tab,data_tab&> mdt;
 HWND page2_wnd=NULL;
 HMODULE mod=NULL;
+/*下列结构是判断是否重复获取记录的依据，该结构在程序启动时初始化，并且在获取了新记录后进行更新*/
+code_tab f_ct;
+
 //使用二维数组定义待扫描的股票代码，当一维小于4时为沪市，否则为深市
 int gpcode[8][2]={
 	{600000,600500},

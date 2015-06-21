@@ -55,13 +55,14 @@ BOOL mydlg::OnInitDialog()
 	Shell_NotifyIcon(NIM_ADD,&ni);
 
 	CTabCtrl *tab=(CTabCtrl*)GetDlgItem(IDC_TAB1);
-	tab->InsertItem(0,"参数设置");
+	tab->InsertItem(0,"即时查询");
 	tab->InsertItem(1,"数据抓取");
+	tab->InsertItem(2,"历史查询");
 	CRect rect;
 	tab->GetClientRect(&rect);
 	rect.top+=30;rect.bottom-=2;
 	rect.left+=4;rect.right-=4;
-	mp1.Create(IDD_PROPPAGE_SMALL,tab);
+	mp1.Create(IDD_PROPPAGE_SMALL2,tab);
 	mp1.MoveWindow(&rect);
 	mp1.ShowWindow(TRUE);
 	mp1.EnableWindow();
@@ -69,6 +70,10 @@ BOOL mydlg::OnInitDialog()
 	mp2.MoveWindow(&rect);
 	mp2.ShowWindow(FALSE);
 	mp2.EnableWindow(0);
+	mp3.Create(IDD_PROPPAGE_SMALL,tab);
+	mp3.MoveWindow(&rect);
+	mp3.ShowWindow(FALSE);
+	mp3.EnableWindow(0);
 	tab->SetCurSel(0);
 	return true;
 };
@@ -92,16 +97,28 @@ void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 	switch(i)
 	{
 	case 0:
+		mp3.ShowWindow(FALSE);
+		mp3.EnableWindow(0);
 		mp2.ShowWindow(FALSE);
 		mp2.EnableWindow(0);
 		mp1.ShowWindow(TRUE);
 		mp1.EnableWindow(1);
 		break;
 	case 1:
+		mp3.ShowWindow(FALSE);
+		mp3.EnableWindow(0);
 		mp1.ShowWindow(FALSE);
 		mp1.EnableWindow(0);
 		mp2.ShowWindow(TRUE);
 		mp2.EnableWindow(1);
+		break;
+	case 2:
+		mp1.ShowWindow(FALSE);
+		mp1.EnableWindow(0);
+		mp2.ShowWindow(FALSE);
+		mp2.EnableWindow(0);
+		mp3.ShowWindow(TRUE);
+		mp3.EnableWindow(1);
 		break;
 	}
 

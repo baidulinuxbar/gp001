@@ -25,10 +25,8 @@ typedef struct DATA_VALUE
 //2015-6-18添加，对应表格： code_tab
 typedef struct CODE_TAB
 {
-	int		gp_code;					//股票代码
-	char	gp_name[60];				//股票名称
-	BYTE	gp_type;					//股票类型  0：沪市 1：深市
-	BYTE	gp_used;					//是否可用	0：可用 1：弃用
+	CTime	gp_date;					//已获取记录的日期
+	int		gp_count;					//当日获取的记录数量
 }code_tab;
 //2015-6-18添加，对应表格：data_tab
 typedef struct DATA_TAB
@@ -37,10 +35,13 @@ typedef struct DATA_TAB
 	CTime	gp_date;					//日期
 	double	pre;						//昨日收盘价
 	double	beg;						//今日开盘价
+	double	cur;						//当前价
 	double	cur_max;					//今日最高
 	double	cur_min;					//今日最低
 	int		total_cnt;					//成交量
 	int		total_pri;					//成交额
+	char	gp_name[60];				//股票名称
+	BYTE	gp_type;					//机构 0：沪市  1：深市
 }data_tab;
 
 

@@ -7,12 +7,17 @@
 #ifndef ID_MYPAGE2
 #include"mypage2.h"
 #endif
+#ifndef ID_MYPAGE3
+#include"mypage3.h"
+#endif
+
 
 class mydlg:public CDialog
 {
 public:
 	mypage1 mp1;
 	mypage2 mp2;
+	mypage3 mp3;
 	NOTIFYICONDATA ni;
 	mydlg(CWnd *pwnd=NULL):CDialog(IDD_DIALOG1,pwnd){};
 	BOOL OnInitDialog();
