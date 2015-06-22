@@ -59,9 +59,12 @@ INFLATE inf=NULL;
 typedef void (WINAPI *INFLATEEND)(void *);
 INFLATEEND infend=NULL;
 
+
 int unzip(char *source,int slen,char *dest,int flag);
 int strfmt(CString str,data_tab &dt);
 time_t str_time(char *chr);
+//数据库存储函数
+int put_db();
 
 BOOL myapp::InitInstance()
 {
@@ -113,6 +116,7 @@ UINT get_data(LPVOID lpvoid)
 	char ch[4096],c1[2048],c2[2048];
 	SOCKET sk;
 	struct sockaddr_in sa;
+	mdt.RemoveAll();
 	mod=::LoadLibraryA("zlibwapi.dll");
 	if(mod==NULL)
 	{
@@ -141,7 +145,7 @@ UINT get_data(LPVOID lpvoid)
 		::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&ch);
 		goto end_01;
 	}
-	errtimes=6;//容错次数
+	errtimes=10;//容错次数
 	for(v1=0;v1<8;v1++)
 	{
 		if(v1<4)
@@ -239,12 +243,24 @@ UINT get_data(LPVOID lpvoid)
 					goto end_01;
 				}
 			}
-			::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
 			closesocket(sk);
+			s1.Format("%s",c2);
+			if(strfmt(s1,dtab))
+			{
+				_snprintf_s((char*)&c2,2048,2048,"format error:%d",j);
+				::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
+				goto end_01;
+			}
+			mdt.Add(dtab);
+			::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
 			Sleep(60);
 		}
 		Sleep(3000);
 		::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,NULL);
+		j=put_db();
+		if(j!=0)
+			goto end_01;
+		mdt.RemoveAll();
 		Sleep(5000);
 	}
 end_01:
@@ -416,7 +432,7 @@ end_03:
 //日期字符串查找并转换函数
 time_t str_time(char *chr)
 {
-	int y,m,d,h,M,s,i,j,k;
+	int y,m,d,h,M,s,i;
 	time_t tt;
 	CString str,str1;
 	char ch[20],*c;
@@ -455,7 +471,7 @@ time_t str_time(char *chr)
 //字符串格式化函数
 int strfmt(CString str,data_tab &dt)
 {
-	int i,j,k;
+	int i;
 	time_t tt;
 	char ch[2048],*c1,*c2,ch1[200];
 	memset((void*)&dt,0,sizeof(dt));
@@ -547,7 +563,31 @@ int strfmt(CString str,data_tab &dt)
 	dt.gp_date=tmm;
 	return 0;	
 };
-
+//数据库存储函数
+int put_db()
+{
+	HMODULE mod1;
+	PUTDATA putdata=NULL;
+	int rt=0;
+	mod1=LoadLibrary("gpdll.dll");
+	if(mod1==NULL)
+		return 1;			//load library error
+	putdata=(PUTDATA)::GetProcAddress(mod1,"put_dt");
+	if(putdata==NULL)
+	{
+		rt=2;				//get procaddress error
+		goto end_04;
+	}
+	if(putdata((void*)&mdt))
+	{
+		rt=3;
+		goto end_04;
+	}
+	rt=0;
+end_04:
+	::FreeLibrary(mod1);
+	return rt;
+};
 
 
 
