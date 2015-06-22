@@ -3,6 +3,7 @@
 #include"mystruct.h"
 #include"myconst.h"
 
+	
 extern int keep_acc;
 extern int thd_running;
 extern int imm_code;
@@ -12,11 +13,11 @@ extern int gpcode[8][2];
 extern UINT get_data_imm(LPVOID lpvoid);
 
 
-PUTMSG putmsg=NULL;
+/*PUTMSG putmsg=NULL;
 GETMSG getmsg=NULL;
 DELMSG delmsg=NULL;
-DELDATA	deldata=NULL;
-CArray<bmsg,bmsg&> *amsg=NULL;
+DELDATA	deldata=NULL; */
+
 
 
 IMPLEMENT_DYNCREATE(mypage1,CPropertyPage)
@@ -94,4 +95,3 @@ void mypage1::mod_chk()
 	bt->SetCheck(0);
 	keep_acc=0;
 };
-

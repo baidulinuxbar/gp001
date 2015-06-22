@@ -25,8 +25,11 @@ typedef struct DATA_VALUE
 //2015-6-18添加，对应表格： code_tab
 typedef struct CODE_TAB
 {
-	CTime	gp_date;					//已获取记录的日期
-	int		gp_count;					//当日获取的记录数量
+//本结构对应的数据库仅有1条记录 
+	CTime	gp_date;					//首次记录的日期
+	int		gp_count;					//首次获取的记录数量
+	CTime	gp_edate;					//最新记录的日期
+	int		gp_ecount;					//最新记录的数量
 }code_tab;
 //2015-6-18添加，对应表格：data_tab
 typedef struct DATA_TAB

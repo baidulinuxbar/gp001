@@ -341,8 +341,11 @@ _declspec(dllexport) int WINAPI put_ct(void *res)
 		MessageBox(NULL,ep->m_strError,"from dll-1002",0);
 		return 1;
 	}
-	mrd.AddNew();
+/*	mrd.AddNew();
 	memset((void*)&(mrd.ct),0,sizeof(mrd.ct));
+	memcpy((void*)&(mrd.ct),res,sizeof(mrd.ct)); */
+	mrd.MoveFirst();
+	mrd.Edit();
 	memcpy((void*)&(mrd.ct),res,sizeof(mrd.ct));
 	mrd.Update();
 	mrd.Close();
@@ -397,12 +400,11 @@ _declspec(dllexport) int WINAPI put_dt(void *res)
 //定义的表格3的读取函数
 /*2015-6-21修改，原来该函数无需传入参数，现需传入一个__time64_t的参数,该参数用于确定
 查询的日期是否存在记录，该函数可能返回0记录，表示该日期没有获取记录。
+2015-6-22修改，本表只有唯一一个记录，涉及的操作只有：读取和更新
 */
 _declspec(dllexport) int WINAPI get_ct(void *res)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-	if(res==NULL)
-		return 1;
 	whichtab=2;
 	dlct.RemoveAll();
 	CString str;
@@ -417,7 +419,7 @@ _declspec(dllexport) int WINAPI get_ct(void *res)
 		MessageBox(NULL,ep->m_strError,"from dll-1005",0);
 		return 1;
 	}
-	str.Format("SELECT * FROM code_tab WHERE gp_date = %ld",(time_t)&res);
+	str.Format("SELECT * FROM code_tab");
 	myrecord mrd(&db);
 	if(mrd.IsOpen())
 		mrd.Close();

@@ -1,6 +1,7 @@
 #include"stdafx.h"
 #include"mydlg.h"
 #include"mystruct.h"
+#include"myconst.h"
 
 #pragma comment(lib,"ws2_32.lib")
 
@@ -10,6 +11,9 @@
 #define IDC_ZHANWANG          40053
 #define IDC_SHOWMAIN          40054
 #define IDC_SHUOMING		  40055
+
+extern code_tab ctab;	
+CArray<code_tab,code_tab&> *amsg=NULL;
 
 BEGIN_MESSAGE_MAP(mydlg,CDialog)
 	//
@@ -26,6 +30,8 @@ BOOL mydlg::OnInitDialog()
 	WSADATA wd;
 	int i;
 	CDialog::OnInitDialog();
+	if(read_dt()!=0)
+		PostQuitMessage(0);
 	SetIcon(AfxGetApp()->LoadIconA(IDI_ICON1),TRUE);
 	SetIcon(AfxGetApp()->LoadIconA(IDI_ICON1),FALSE);
 	i=WSAStartup(MAKEWORD(2,2),&wd);
@@ -126,14 +132,47 @@ void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 
 	presult=0;
 };
-BOOL mydlg::read_dt()
+int mydlg::read_dt()
 {
-	CFile file;
-	if(!file.Open("./ssss.dat",CFile::modeRead))
-		return false;
-
-
-	return true;
+	int i;
+	HMODULE mod=NULL;
+	GETMSG  get_cd=NULL;
+	mod=::LoadLibraryA("gpdll.dll");
+	if(mod==NULL)
+	{
+		MessageBox("初始化失败：加载动态连接库失败！");
+		return 1;
+	}
+	get_cd=(GETMSG)::GetProcAddress(mod,"get_ct");
+	if(get_cd==NULL)
+	{
+		::FreeLibrary(mod);
+		MessageBox("初始化失败：取得函数地址失败！");
+		return 1;
+	}
+	amsg=(CArray<code_tab,code_tab&> *)::GetProcAddress(mod,"dlct");
+	if(amsg==NULL)
+	{
+		::FreeLibrary(mod);
+		MessageBox("初始化失败：取得函数地址失败11！");
+		return 1;
+	}
+	i=get_cd(NULL);
+	if(i!=0)
+	{
+		::FreeLibrary(mod);
+		return 1;
+	}
+	i=amsg->GetCount();
+	if(i!=1)
+	{
+		::FreeLibrary(mod);
+		return 1;
+	}
+	memset((void*)&ctab,0,sizeof(ctab));
+	ctab=amsg->GetAt(0);
+	::FreeLibrary(mod);
+	return 0;
 };
 
 LRESULT mydlg::onnotify(WPARAM wparam,LPARAM lparam)

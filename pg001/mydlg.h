@@ -22,7 +22,7 @@ public:
 	mydlg(CWnd *pwnd=NULL):CDialog(IDD_DIALOG1,pwnd){};
 	BOOL OnInitDialog();
 private:
-	BOOL read_dt();
+	int read_dt();
 	afx_msg void onquit();
 	afx_msg void onshow();
 	afx_msg void onparam();

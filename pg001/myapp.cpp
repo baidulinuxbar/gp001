@@ -9,15 +9,15 @@
 
 //#pragma comment(lib,"zlibstat.lib")
 
-bmsg g_msg;
-data_v g_data;
-data_tab dtab;
-CArray<bmsg,bmsg&> gamsg;
-CArray<code_tab,code_tab&> mct;
-CArray<data_tab,data_tab&> mdt;
-HWND page2_wnd=NULL;
-HWND page1_wnd=NULL;
-HMODULE mod=NULL;
+code_tab ctab;							//信息表的结构体
+data_tab dtab;							//数据表的结构体
+CArray<code_tab,code_tab&> mct;			//信息表的结构队列
+CArray<data_tab,data_tab&> mdt;			//数据表的结构队列
+HWND page2_wnd=NULL;					//界面2（数据抓取界面）的窗口句柄，消息发送使用
+HWND page1_wnd=NULL;					//界面1（即时查询界面）的窗口句柄，消息发送使用
+HMODULE mod=NULL;						//zlib库专用的模块句柄
+
+
 /*下列结构是判断是否重复获取记录的依据，该结构在程序启动时初始化，并且在获取了新记录后进行更新
 f_ct存储了数据库中最早的记录日期，l_ct存储了最新记录的日期
 */
@@ -50,8 +50,7 @@ int gpcode[8][2]={
 };
 
 
-/*typedef int (WINAPI *UNCOMP)(unsigned char*,unsigned long*,unsigned char*,unsigned long*);
-UNCOMP uncomp=NULL;*/
+
 typedef int (WINAPI *INFLATEINIT32)(void *,int,const char *,int);
 INFLATEINIT32 inf32=NULL;
 typedef int (WINAPI *INFLATE)(void *,int);
@@ -59,10 +58,10 @@ INFLATE inf=NULL;
 typedef void (WINAPI *INFLATEEND)(void *);
 INFLATEEND infend=NULL;
 
-
-int unzip(char *source,int slen,char *dest,int flag);
-int strfmt(CString str,data_tab &dt);
-time_t str_time(char *chr);
+//前置声明的函数
+int unzip(char *source,int slen,char *dest,int flag);  //gzip的解压实现函数
+int strfmt(CString str,data_tab &dt);				   //数据包字符串格式化为数据表结构
+time_t str_time(char *chr);							   //字符串格式的日期转换为CTime结构。
 //数据库存储函数
 int put_db();
 
@@ -111,6 +110,8 @@ void con_str(int code,int type,char *buf,int len)
 //获取数据的线程函数
 UINT get_data(LPVOID lpvoid)
 {
+	int x=0;
+	int y1,y2;
 	int i,j,k,v1,v2,errtimes;
 	CString str,s1,s2;
 	char ch[4096],c1[2048],c2[2048];
@@ -251,18 +252,58 @@ UINT get_data(LPVOID lpvoid)
 				::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
 				goto end_01;
 			}
+			if(x==0)
+			{//首次获取数据要与数据库中现有最新数据的日期比较，若获取数据的日期比数据库新则保存
+				//否则退出
+				x=1;
+				y1=(int)(ctab.gp_edate.GetTime()/86400); //取整天数
+				y2=(int)(dtab.gp_date.GetTime()/86400);
+				if(y1>=y2) //不予保存
+				{
+					_snprintf_s((char*)&c2,2048,2048,"当前获取的数据已经保存在数据库中，获取数据停止");
+					::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
+					goto end_01;
+				}
+				y2=dtab.gp_date.GetHour();
+				if(y2>=9 && y2<15)
+				{//在在开市期间不能保存
+					_snprintf_s((char*)&c2,2048,2048,"当前股市正在开市，获取数据停止");
+					::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
+					goto end_01;
+				}
+			}
 			mdt.Add(dtab);
 			::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
 			Sleep(60);
 		}
 		Sleep(3000);
 		::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,NULL);
-		j=put_db();
-		if(j!=0)
-			goto end_01;
-		mdt.RemoveAll();
 		Sleep(5000);
 	}
+	j=put_db();
+	switch(j)
+	{
+	case 0://成功
+		_snprintf_s((char*)&c2,2048,2048,"数据成功保存至数据库");
+		break;
+	case 1://加载链接库失败
+		_snprintf_s((char*)&c2,2048,2048,"加载数据库访问的链接库失败");
+		break;
+	case 2://取得地址失败
+		_snprintf_s((char*)&c2,2048,2048,"取得数据库访问函数putdata的地址失败");
+		break;
+	case 3://
+		_snprintf_s((char*)&c2,2048,2048,"取得数据库访问函数putmsg的地址失败");
+		break;
+	case 4://
+		_snprintf_s((char*)&c2,2048,2048,"数据库存储数据表失败");
+		break;
+	case 5://
+		_snprintf_s((char*)&c2,2048,2048,"数据库存储信息表失败");
+		break;
+	};
+	::SendMessageA(page2_wnd,WM_TEST_MESSAGE,0,(LPARAM)&c2);
+	mdt.RemoveAll();
 end_01:
 	::FreeLibrary(mod);
 	mod=NULL;
@@ -568,6 +609,7 @@ int put_db()
 {
 	HMODULE mod1;
 	PUTDATA putdata=NULL;
+	PUTMSG  putmsg=NULL;
 	int rt=0;
 	mod1=LoadLibrary("gpdll.dll");
 	if(mod1==NULL)
@@ -578,9 +620,28 @@ int put_db()
 		rt=2;				//get procaddress error
 		goto end_04;
 	}
+	putmsg=(PUTMSG)::GetProcAddress(mod1,"put_ct");
+	if(putmsg==NULL)
+	{
+		rt=3;				//get procaddress error
+		goto end_04;
+	}
 	if(putdata((void*)&mdt))
 	{
-		rt=3;
+		rt=4;
+		goto end_04;
+	}
+	dtab=mdt.GetAt(0);
+	if(ctab.gp_count<1) //初次运行，数据库中尚无数据
+	{
+		ctab.gp_date=dtab.gp_date;
+		ctab.gp_count=mdt.GetCount();
+	}
+	ctab.gp_ecount=mdt.GetCount();
+	ctab.gp_edate=dtab.gp_date;
+	if(putmsg((void*)&ctab))
+	{
+		rt=5;
 		goto end_04;
 	}
 	rt=0;

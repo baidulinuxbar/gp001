@@ -16,7 +16,7 @@ myrecord::myrecord(CDatabase *db):CRecordset(db)
 		memset((void*)&dv,0,sizeof(dv));
 		break;
 	case 2://table code_tab
-		m_nFields=2;
+		m_nFields=4;
 		memset((void*)&ct,0,sizeof(ct));
 		break;
 	case 3://table data_tab
@@ -66,6 +66,8 @@ void myrecord::DoFieldExchange(CFieldExchange *pdx)
 	case 2://code_tab
 		RFX_Date(pdx,"gp_date",ct.gp_date);
 		RFX_Int(pdx,"gp_count",ct.gp_count);
+		RFX_Date(pdx,"gp_edate",ct.gp_edate);
+		RFX_Int(pdx,"gp_ecount",ct.gp_ecount);
 		break;
 	case 3://data_tab
 		RFX_Int(pdx,"gp_code",dt.gp_code);
