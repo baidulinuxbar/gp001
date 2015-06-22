@@ -105,6 +105,7 @@ void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 		mp1.EnableWindow(1);
 		break;
 	case 1:
+		mp1.mod_chk();
 		mp3.ShowWindow(FALSE);
 		mp3.EnableWindow(0);
 		mp1.ShowWindow(FALSE);
@@ -113,6 +114,7 @@ void mydlg::onsel(NMHDR *pnmhdr,LRESULT *presult)
 		mp2.EnableWindow(1);
 		break;
 	case 2:
+		mp1.mod_chk();
 		mp1.ShowWindow(FALSE);
 		mp1.EnableWindow(0);
 		mp2.ShowWindow(FALSE);

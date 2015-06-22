@@ -1,6 +1,7 @@
 #define ID_MY_CONST_THIS
 
 #define WM_TEST_MESSAGE			WM_USER+0x133
+#define WM_IMM_MESSAGE			WM_USER+0X134
 
 //60.215.128.238
 //http://hq.sinajs.cn/list=sh600303

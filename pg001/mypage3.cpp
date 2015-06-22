@@ -1,5 +1,8 @@
 #include"stdafx.h"
 #include"mypage3.h"
+#include"myconst.h"
+#include"mystruct.h"
+
 
 IMPLEMENT_DYNCREATE(mypage3,CPropertyPage)
 
@@ -14,4 +17,7 @@ BOOL mypage3::OnInitDialog()
 	return true;
 };
 afx_msg void mypage3::onsrh()
-{};
+{
+
+};
+

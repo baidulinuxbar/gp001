@@ -38,8 +38,8 @@ typedef struct DATA_TAB
 	double	cur;						//当前价
 	double	cur_max;					//今日最高
 	double	cur_min;					//今日最低
-	int		total_cnt;					//成交量
-	int		total_pri;					//成交额
+	char	total_cnt[20];					//成交量
+	char	total_pri[20];					//成交额
 	char	gp_name[60];				//股票名称
 	BYTE	gp_type;					//机构 0：沪市  1：深市
 }data_tab;

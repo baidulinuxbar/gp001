@@ -75,8 +75,8 @@ void myrecord::DoFieldExchange(CFieldExchange *pdx)
 		RFX_Double(pdx,"gp_cur_price",dt.cur);
 		RFX_Double(pdx,"gp_cur_max",dt.cur_max);
 		RFX_Double(pdx,"gp_cur_min",dt.cur_min);
-		RFX_Int(pdx,"gp_total_cnt",dt.total_cnt);
-		RFX_Int(pdx,"gp_total_price",dt.total_pri);
+		RFX_Text(pdx,"gp_total_cnt",dt.total_cnt,20);
+		RFX_Text(pdx,"gp_total_price",dt.total_pri,20);
 		RFX_Text(pdx,"gp_name",dt.gp_name,60);
 		RFX_Byte(pdx,"gp_type",dt.gp_type);
 		break;

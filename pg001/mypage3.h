@@ -9,7 +9,9 @@ public:
 	DECLARE_DYNCREATE(mypage3)
 	mypage3():CPropertyPage(IDD_PROPPAGE_SMALL){};
 	BOOL OnInitDialog();
-	afx_msg void onsrh();
+	afx_msg void onsrh(); //查询按钮的响应函数
+
+
 public:
 DECLARE_MESSAGE_MAP()
 };
